@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.ibb.co/4J7b4HJ/Magi-OSGit-1.png" width="600" title="hover text">
+  <img src="https://i.ibb.co/pj9QdMg/magi-OSLogo-Git.png" width="600" title="hover text">
   
   <h1>What is magi os?</h1>
   <p>This personal project is about creating a small operating system in the Rust programming language. 
