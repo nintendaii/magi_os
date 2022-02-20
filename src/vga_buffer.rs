@@ -28,10 +28,10 @@ pub enum Color {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-struct ColorCode(u8);
+pub struct ColorCode(u8);
 
 impl ColorCode {
-    fn new(foreground: Color, background: Color) -> ColorCode {
+    pub fn new(foreground: Color, background: Color) -> ColorCode {
         ColorCode((background as u8) << 4 | (foreground as u8))
     }
 }
@@ -53,7 +53,7 @@ struct Buffer {
 
 pub struct Writer {
     column_position: usize,
-    color_code: ColorCode,
+    pub color_code: ColorCode,
     buffer: &'static mut Buffer,
 }
 
@@ -121,7 +121,7 @@ impl fmt::Write for Writer {
 lazy_static! {
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
-        color_code: ColorCode::new(Color::Red, Color::Black),
+        color_code: ColorCode::new(Color::LightBlue, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     });
 }
