@@ -13,8 +13,11 @@ pub extern "C" fn _start() -> ! {
     logo::show();
     //optional color setting
     vga_buffer::WRITER.lock().color_code = vga_buffer::ColorCode::new(vga_buffer::Color::White, vga_buffer::Color::Black);
+    magi_os::init();
+    x86_64::instructions::interrupts::int3();
     #[cfg(test)]
     test_main();
+    println!("It did not crash!");
     loop {}
 }
 
