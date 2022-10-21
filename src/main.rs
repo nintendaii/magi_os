@@ -15,12 +15,6 @@ pub extern "C" fn _start() -> ! {
     vga_buffer::WRITER.lock().color_code = vga_buffer::ColorCode::new(vga_buffer::Color::White, vga_buffer::Color::Black);
     magi_os::init();
     
-    fn stack_overflow(){
-        stack_overflow();
-    };
-
-    stack_overflow();
-
     #[cfg(test)]
     test_main();
     println!("It did not crash!");
