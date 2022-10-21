@@ -18,7 +18,7 @@ pub extern "C" fn _start() -> ! {
     #[cfg(test)]
     test_main();
     println!("It did not crash!");
-    loop {}
+    magi_os::hlt_loop();
 }
 
 
@@ -29,7 +29,7 @@ use core::panic::PanicInfo;
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    magi_os::hlt_loop();
 }
 // our panic handler in test mode
 #[cfg(test)]

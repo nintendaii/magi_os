@@ -25,7 +25,7 @@ fn test_println() {
     println!("test_println output");
 }
 
-#[test_case]
-fn test_panic() {
-    panic!("This should panic");
-}
+// #[test_case]
+// fn test_panic() {
+//     panic!("This should panic");
+// }
