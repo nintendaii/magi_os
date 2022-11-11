@@ -8,14 +8,17 @@ mod logo;
 mod vga_buffer;
 mod serial;
 
+extern crate alloc;
+use alloc::boxed::Box;
 use bootloader::{BootInfo, entry_point};
 
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use magi_os::memory;
+    use magi_os::allocator;
     use x86_64::{structures::paging::Page, VirtAddr};
-    use magi_os::memory::BootInfoFrameAllocator;
+    use magi_os::memory::{BootInfoFrameAllocator};
 
 
     logo::show();
@@ -23,25 +26,20 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     vga_buffer::WRITER.lock().color_code = vga_buffer::ColorCode::new(vga_buffer::Color::White, vga_buffer::Color::Black);
     magi_os::init();
 
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let mut mapper = unsafe { memory::init(phys_mem_offset) };
     let mut frame_allocator = unsafe {
         BootInfoFrameAllocator::init(&boot_info.memory_map)
     };
 
-
-    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
-    let mut mapper = unsafe { memory::init(phys_mem_offset) };
-    let mut frame_allocator = memory::EmptyFrameAllocator;
-
-    // map an unused page
-    let page = Page::containing_address(VirtAddr::new(0));
-    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
-
-    // write the string `New!` to the screen through the new mapping
-    let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
-    unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e)};
-
-
+    let mut frame_allocator = unsafe {
+        BootInfoFrameAllocator::init(&boot_info.memory_map)
+    };
+    allocator::init_heap(&mut mapper, &mut frame_allocator)
+        .expect("heap initialization failed");
     
+    let x = Box::new(41);
+
     #[cfg(test)]
     test_main();
     println!("It did not crash!");

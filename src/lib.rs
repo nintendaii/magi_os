@@ -1,4 +1,5 @@
 #![no_std]
+#![feature(alloc_error_handler)] // at the top of the file
 #![feature(abi_x86_interrupt)]
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
@@ -10,7 +11,9 @@ pub mod vga_buffer;
 pub mod interrupts;
 pub mod gdt;
 pub mod memory;
+pub mod allocator;
 
+extern crate alloc;
 use core::panic::PanicInfo;
 
 pub fn init() {
@@ -91,4 +94,9 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
         let mut port = Port::new(0xf4);
         port.write(exit_code as u32);
     }
+}
+
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
 }
