@@ -1,4 +1,5 @@
 #![no_std]
+#![feature(const_mut_refs)]
 #![feature(alloc_error_handler)] // at the top of the file
 #![feature(abi_x86_interrupt)]
 #![cfg_attr(test, no_main)]
